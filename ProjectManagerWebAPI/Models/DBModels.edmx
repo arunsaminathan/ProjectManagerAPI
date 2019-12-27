@@ -22,6 +22,7 @@
           <Property Name="End_Date" Type="date" />
           <Property Name="Priority" Type="int" />
           <Property Name="User_ID" Type="int" Nullable="false" />
+          <Property Name="Status" Type="int" />
         </EntityType>
         <EntityType Name="Tasks">
           <Key>
@@ -36,6 +37,7 @@
           <Property Name="End_Date" Type="date" />
           <Property Name="Task_Priority" Type="int" />
           <Property Name="ISTaskEnded" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="int" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -45,6 +47,7 @@
           <Property Name="First_Name" Type="nvarchar" MaxLength="50" />
           <Property Name="Last_Name" Type="nvarchar" MaxLength="50" />
           <Property Name="Employee_ID" Type="int" />
+          <Property Name="Status" Type="int" />
         </EntityType>
         <Association Name="FK__Project__User_ID__3D5E1FD2">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -154,6 +157,7 @@
           <Property Name="User_ID" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Tasks" Relationship="DBModel.FK__Tasks__Project_I__4F7CD00D" FromRole="Project" ToRole="Task" />
           <NavigationProperty Name="User" Relationship="DBModel.FK__Project__User_ID__3D5E1FD2" FromRole="Project" ToRole="User" />
+          <Property Name="Status" Type="Int32" />
         </EntityType>
         <EntityType Name="ParentTask">
           <Key>
@@ -179,6 +183,7 @@
           <NavigationProperty Name="ParentTask" Relationship="DBModel.FK__Tasks__Parent_ID__4E88ABD4" FromRole="Task" ToRole="ParentTask" />
           <NavigationProperty Name="Project" Relationship="DBModel.FK__Tasks__Project_I__4F7CD00D" FromRole="Task" ToRole="Project" />
           <NavigationProperty Name="User" Relationship="DBModel.FK__Tasks__User_ID__5070F446" FromRole="Task" ToRole="User" />
+          <Property Name="Status" Type="Int32" />
         </EntityType>
         <Association Name="FK__Tasks__Parent_ID__4E88ABD4">
           <End Type="DBModel.ParentTask" Role="ParentTask" Multiplicity="1" />
@@ -214,6 +219,7 @@
           <Property Name="Employee_ID" Type="Int32" />
           <NavigationProperty Name="Projects" Relationship="DBModel.FK__Project__User_ID__3D5E1FD2" FromRole="User" ToRole="Project" />
           <NavigationProperty Name="Tasks" Relationship="DBModel.FK__Tasks__User_ID__5070F446" FromRole="User" ToRole="Task" />
+          <Property Name="Status" Type="Int32" />
         </EntityType>
         <Association Name="FK__Project__User_ID__3D5E1FD2">
           <End Type="DBModel.User" Role="User" Multiplicity="1" />
@@ -248,6 +254,7 @@
           <EntitySetMapping Name="Projects">
             <EntityTypeMapping TypeName="DBModel.Project">
               <MappingFragment StoreEntitySet="Project">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="User_ID" ColumnName="User_ID" />
                 <ScalarProperty Name="Priority" ColumnName="Priority" />
                 <ScalarProperty Name="End_Date" ColumnName="End_Date" />
@@ -268,6 +275,7 @@
           <EntitySetMapping Name="Tasks">
             <EntityTypeMapping TypeName="DBModel.Task">
               <MappingFragment StoreEntitySet="Tasks">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="ISTaskEnded" ColumnName="ISTaskEnded" />
                 <ScalarProperty Name="Task_Priority" ColumnName="Task_Priority" />
                 <ScalarProperty Name="End_Date" ColumnName="End_Date" />
@@ -283,6 +291,7 @@
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="DBModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Employee_ID" ColumnName="Employee_ID" />
                 <ScalarProperty Name="Last_Name" ColumnName="Last_Name" />
                 <ScalarProperty Name="First_Name" ColumnName="First_Name" />

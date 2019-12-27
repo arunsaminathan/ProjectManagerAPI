@@ -17,17 +17,20 @@ namespace ProjectManagerWebAPI.Controllers
         private DBModels db = new DBModels();
 
         // GET: api/Users
-        public IQueryable<Users> GetUsers()
+
+        public IHttpActionResult GetUsers()
         {
             //return db.Users;
-            return from s in db.Users
-                   select new Users
-                   {
-                       User_ID = s.User_ID,
-                       First_Name = s.First_Name,
-                       Last_Name = s.Last_Name,
-                       Employee_ID = s.Employee_ID
-                   };
+            return Ok((from s in db.Users
+                       where s.Status == 1
+                       select new Users
+                       {
+                           User_ID = s.User_ID,
+                           First_Name = s.First_Name,
+                           Last_Name = s.Last_Name,
+                           Employee_ID = s.Employee_ID
+                       }).AsEnumerable());
+            
         }
 
         // GET: api/Users/5
@@ -82,6 +85,7 @@ namespace ProjectManagerWebAPI.Controllers
         [ResponseType(typeof(User))]
         public IHttpActionResult PostUser(User user)
         {
+            user.Status = 1;
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -113,15 +117,46 @@ namespace ProjectManagerWebAPI.Controllers
         public IHttpActionResult DeleteUser(int id)
         {
             User user = db.Users.Find(id);
-            if (user == null)
+            user.Status = 0;
+
+            //if (user == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //db.Users.Remove(user);
+            //db.SaveChanges();
+
+            //return Ok(user);
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
 
-            db.Users.Remove(user);
-            db.SaveChanges();
+            if (id != user.User_ID)
+            {
+                return BadRequest();
+            }
 
-            return Ok(user);
+            db.Entry(user).State = EntityState.Modified;
+
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return StatusCode(HttpStatusCode.NoContent);
         }
 
         protected override void Dispose(bool disposing)

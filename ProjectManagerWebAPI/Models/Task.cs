@@ -23,6 +23,7 @@ namespace ProjectManagerWebAPI.Models
         public Nullable<System.DateTime> End_Date { get; set; }
         public Nullable<int> Task_Priority { get; set; }
         public string ISTaskEnded { get; set; }
+        public Nullable<int> Status { get; set; }
     
         public virtual ParentTask ParentTask { get; set; }
         public virtual Project Project { get; set; }

@@ -15,54 +15,36 @@ namespace ProjectManagerWebAPI.Controllers
     public class TasksController : ApiController
     {
         private DBModels db = new DBModels();
-        public partial class TaskDetails
-        {
-            public int Project_ID { get; set; }
-            public string Project_Name { get; set; }
-            public Nullable<System.DateTime> Start_Date { get; set; }
-            public Nullable<System.DateTime> End_Date { get; set; }
-            public Nullable<int> Task_Priority { get; set; }
-            public int User_ID { get; set; }
-            public string First_Name { get; set; }
-            public string Last_Name { get; set; }
-            public string ISTaskEnded { get; set; }
-            
-            public Nullable<int> Employee_ID { get; set; }
-            public Nullable<int> Parent_ID { get; set; }
-            public Nullable<int> Task_ID { get; set; }
-            
-            public string Parent_Task { get; set; }
-            public string Task_Name { get; set; }
-        }
+       
         // GET: api/Tasks
         [HttpGet]
-        public IQueryable<TaskDetails> GetTasks()
+        public IHttpActionResult GetTasks()
         {
-            return from pt in db.ParentTasks
-                   join t in db.Tasks on pt.Parent_ID equals t.Parent_ID into mma
-                   from t in mma.DefaultIfEmpty()
-                   join p in db.Projects on (t == null ? 0 : t.Project_ID) equals p.Project_ID into pma
-                   from p in pma.DefaultIfEmpty()
-                   join u in db.Users on (p == null ? 0 : p.User_ID) equals u.User_ID into usr
-                   from u in usr.DefaultIfEmpty()
-                   select new TaskDetails
-                   {
-                       //{
-                       Project_ID = p.Project_ID,
-                       Project_Name = p.Project_Name,
-                       Start_Date = t.Start_Date,
-                       End_Date = t.End_Date,
-                       Task_Priority = t.Task_Priority,
-                       User_ID = u.User_ID,
-                       First_Name = u.First_Name,
-                       Last_Name = u.Last_Name,
-                       Employee_ID = u.Employee_ID,
-                       Task_Name = t.Task_Name,
-                       ISTaskEnded = t.ISTaskEnded,
-                       Task_ID = t.Task_ID,
-                       Parent_Task = pt.Parent_Task,
-                       Parent_ID = pt.Parent_ID
-                   };
+            return Ok((from t in db.Tasks
+                       join pt in db.ParentTasks on t.Parent_ID equals pt.Parent_ID into mma
+                       from pt in mma.DefaultIfEmpty()
+                       join p in db.Projects on (t == null ? 0 : t.Project_ID) equals p.Project_ID into pma
+                       from p in pma.DefaultIfEmpty()
+                       join u in db.Users on (t == null ? 0 : t.User_ID) equals u.User_ID into usr
+                       from u in usr.DefaultIfEmpty()
+                       where t.Status==1
+                       select new TaskDetails
+                       {
+                           Project_ID = p.Project_ID,
+                           Project_Name = p.Project_Name,
+                           Start_Date = t.Start_Date,
+                           End_Date = t.End_Date,
+                           Task_Priority = t.Task_Priority,
+                           User_ID = u.User_ID,
+                           First_Name = u.First_Name,
+                           Last_Name = u.Last_Name,
+                           Employee_ID = u.Employee_ID,
+                           Task_Name = t.Task_Name,
+                           ISTaskEnded = t.ISTaskEnded,
+                           Task_ID = t.Task_ID,
+                           Parent_Task = pt.Parent_Task,
+                           Parent_ID = pt.Parent_ID
+                       }).AsEnumerable());
             //    return from p in db.ParentTasks
             //           join t in db.Tasks on p.Parent_ID equals t.Parent_ID into gj
             //           from subpet in gj.DefaultIfEmpty()
@@ -89,7 +71,7 @@ namespace ProjectManagerWebAPI.Controllers
         }
         // GET: api/Tasks/"SD"
    
-        //[Route("api/Tasks/secondget")]
+        [Route("api/Tasks/Get/strSortBy")]
         [HttpGet]
         public IQueryable<Task> GetDetailedTasks(string strSortBy)
         {
@@ -164,12 +146,13 @@ namespace ProjectManagerWebAPI.Controllers
         {
             ParentTask parentTask = new ParentTask();
             parentTask.Parent_Task = task.Task_Name;
+            task.Status = 1;
             task.ISTaskEnded = "N";
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (task.Task_ID == 0)
+            if (task.Task_ID == 0 && task.Parent_ID ==0)
             {
                 db.ParentTasks.Add(parentTask);
             }
@@ -240,6 +223,24 @@ namespace ProjectManagerWebAPI.Controllers
         private bool TaskExists(int id)
         {
             return db.Tasks.Count(e => e.Task_ID == id) > 0;
+        }
+
+        public partial class TaskDetails
+        {
+            public int Project_ID { get; set; }
+            public string Project_Name { get; set; }
+            public Nullable<System.DateTime> Start_Date { get; set; }
+            public Nullable<System.DateTime> End_Date { get; set; }
+            public Nullable<int> Task_Priority { get; set; }
+            public int User_ID { get; set; }
+            public string First_Name { get; set; }
+            public string Last_Name { get; set; }
+            public string ISTaskEnded { get; set; }
+            public Nullable<int> Employee_ID { get; set; }
+            public Nullable<int> Parent_ID { get; set; }
+            public Nullable<int> Task_ID { get; set; }
+            public string Parent_Task { get; set; }
+            public string Task_Name { get; set; }
         }
     }
 }

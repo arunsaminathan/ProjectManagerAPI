@@ -25,6 +25,7 @@ namespace ProjectManagerWebAPI.Models
         public string First_Name { get; set; }
         public string Last_Name { get; set; }
         public Nullable<int> Employee_ID { get; set; }
+        public Nullable<int> Status { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Project> Projects { get; set; }

@@ -19,14 +19,16 @@ namespace ProjectManagerWebAPI
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+
             //GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-            //GlobalConfiguration.Configuration.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
-//            GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings
-//.Add(new System.Net.Http.Formatting.RequestHeaderMapping("Accept",
-//                              "text/html",
-//                              StringComparison.InvariantCultureIgnoreCase,
-//                              true,
-//                              "application/json"));
+            GlobalConfiguration.Configuration.Formatters.Remove(GlobalConfiguration.Configuration.Formatters.XmlFormatter);
+            GlobalConfiguration.Configuration.Formatters.JsonFormatter.MediaTypeMappings
+                               .Add(new System.Net.Http.Formatting.RequestHeaderMapping("Accept",
+                              "text/html",
+                              StringComparison.InvariantCultureIgnoreCase,
+                              true,
+                              "application/json"));
         }
     }
 }
